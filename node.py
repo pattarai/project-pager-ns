@@ -1,45 +1,51 @@
-# Complete project details at https://RandomNerdTutorials.com
 
-def web_page():
-  if ack.value() == 1:
-    gpio_state="ON"
-  else:
-    gpio_state="OFF"
-  
-  html = """<html><head> <title>ESP Web Server</title> <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:,"> <style>html{font-family: Helvetica; display:inline-block; margin: 0px auto; text-align: center;}
-  h1{color: #0F3376; padding: 2vh;}p{font-size: 1.5rem;}.button{display: inline-block; background-color: #e7bd3b; border: none; 
-  border-radius: 4px; color: white; padding: 16px 40px; text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}
-  .button2{background-color: #4286f4;}</style></head><body> <h1>ESP Web Server</h1> 
-  <p>GPIO state: <strong>""" + gpio_state + """</strong></p><p><a href="/?ack=on"><button class="button">ON</button></a></p>
-  <p><a href="/?ack=off"><button class="button button2">OFF</button></a></p></body></html>"""
-  return html
+from machine import Pin, SoftI2C
+import ssd1306
+from time import sleep
+import requests
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 80))
 s.listen(5)
 
 while True:
-  conn, addr = s.accept()
-  print('Got a connection from %s' % str(addr))
-  request = conn.recv(1024)
-  request = str(request)
-  print('Content = %s' % request)
-  # TODO: Display message on the OLED
-  
-  ack_on = request.find('/?ack=on')
-  ack_off = request.find('/?ack=off')
-  if ack_on == 6:
-    print('ack ON')
-    # TODO: Send  back ack request to BS
-
-    ack.value(1)
-  if ack_off == 6:
-    print('ack OFF')
+    conn, addr = s.accept()
+    print('Got a connection from %s' % str(addr))
+    dataFromBS = conn.recv(1024)
+    dataFromBS = str(dataFromBS)
+    
+    # Display message on the OLED
+    displayMessage(dataFromBS)
     ack.value(0)
-  response = web_page()
-  conn.send('HTTP/1.1 200 OK\n')
-  conn.send('Content-Type: text/html\n')
-  conn.send('Connection: close\n\n')
-  conn.sendall(response)
-  conn.close()
+
+    if(getStatus() == "ACK"):
+        r = requests.get(BROADCAST_SERVER_URL+"/ack?status=true")
+        print(r.content)
+
+    response = getStatus()
+    conn.send('HTTP/1.1 200 OK\n')
+    conn.send('Content-Type: text/html\n')
+    conn.send('Connection: close\n\n')
+    conn.sendall(response)
+    conn.close()
+
+
+def getStatus():
+    if ack.value() == 1:
+        ack_state="ACK"
+    else:
+        ack_state="WAIT"
+    return ack_state
+
+def displayMessage(content):
+    try:
+        i2c = SoftI2C(scl=Pin(5), sda=Pin(4))
+        oled_width = 128
+        oled_height = 64
+        oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
+        oled.text('{content}', 0, 0)
+        oled.show()
+        return "Successfully Displayed"
+    except Exception as e:
+        print(e)
+        return "OLED Failure"

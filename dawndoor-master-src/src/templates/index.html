@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>DawnDoor - Automatic Coop Door Opener</title>
+    <link rel="stylesheet" href="/static/milligram.min.css">
+    <link rel="stylesheet" href="/static/app.css">
+  </head>
+  <body>
+    <header>
+      <section class="container">
+        <div class="brand">
+          <a href="/" class="link">
+            <img src="/static/header-logo.svg" class="logo" width="100%" height="100%">
+            <h1>DawnDoor</h1>
+          </a>
+        </div>
+        <nav>
+          <a href="#dashboard" class="link">Dashboard</a>
+          <a href="#door" class="link">Door</a>
+          <a href="#location" class="link">Location</a>
+          <a href="#network" class="link">Network</a>
+        </nav>
+      </section>
+    </header>
+    <main>
+      <section id="alerts" class="container">
+        <!--[if IE]>
+          <div class="alert alert-danger">
+          <strong>Your browser is not compatible.</strong> You may experience problems using your current browser.
+          Please consider switching to a standards-compliant browser like <a href="https://getfirefox.com">Firefox</a> or
+          <a href="https://chrome.google.com/">Google Chrome</a>.
+          </div>
+        <![endif]-->
+        <div id="config-saved" class="alert alert-success hide" role="alert">
+          <strong>Saved.</strong> The configuration has been saved.
+          <button type="button" class="close" aria-label="Close" data-close="config-saved">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </section>
+      <section id="dashboard" class="container">
+        <div class="row">
+          <div class="column">
+            <div class="card">
+              <img src="/static/door.svg">
+              <div class="body">
+                <h5>Door</h5>
+                <p>Door is currently: <span class="door-status"></span></p>
+              </div>
+              <div class="footer clearfix">
+                <a href="#door" class="button float-right"><span class="invert-action"></span> now</a>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card">
+              <img src="/static/wifi.svg">
+              <div class="body">
+                <h5>Network</h5>
+                <p>IP Address: <span class="ip-address"></span></p>
+              </div>
+              <div class="footer clearfix">
+                <a href="#network" class="button float-right">Network settings</a>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card">
+              <img src="/static/globe.svg">
+              <div class="body">
+                <h5>Location</h5>
+                <p>Timezone: <span class="timezone"></span></p>
+              </div>
+              <div class="footer clearfix">
+                <a href="#location" class="button float-right">Change timezone</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="network" class="container" style="display: none">
+        <form>
+          <div>
+            <label for="essid">Network name (SSID)</label>
+            <input type="text" id="essid" class="with-help">
+            <p class="help">The name of the network to connect to (sometimes called the SSID or ESSID)</p>
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" class="with-help">
+            <div><a id="toggle-password" class="button button-outline button-small float-right">Show password</a></div>
+            <p class="help">The password or passphrase of the network to connect to.</p>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label for="can-start-ap">
+                <input type="checkbox" id="can-start-ap" class="with-help"> Run Access Point
+              </label>
+            </div>
+            <p class="help">Once the Dawn Door is connected to your network, it is recommended to switch this off.</small>
+          </div>
+          <div class="form-group">
+            <button type="button" id="save-network">Save</button>
+          </div>
+        </form>
+      </section>
+      <section id="door" class="container" style="display: none">
+        <div class="row">
+          <div class="col-xs-12">
+            <p>The door is currently <span class="door-status"></span></p>
+            <button type="button"><span class="invert-action"></span> door</button>
+          </div>
+        </div>
+      </section>
+      <section id="location" class="container" style="display: none">
+        <form>
+          <div class="form-row">
+            <button class="button button-outline button-small float-right" style="margin-bottom: -0.2rem;" id="get-location">Get location</button>
+            <div class="form-group col-xs-12 col-md-6">
+              <label for="latitude" class="bmd-label-floating">Latitude</label>
+              <input type="text" class="form-control" id="latitude">
+              <span class="bmd-help">The latitude of your location</span>
+            </div>
+            <div class="form-group col-xs-12 col-md-6">
+              <label for="longitude" class="bmd-label-floating">Longitude</label>
+              <input type="text" class="form-control" id="longitude">
+              <span class="bmd-help">The longitude of your location</span>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="timezone" class="bmd-label-floating">Timezone</label>
+            <select id="timezone" class="form-control" placeholder="Select timezone...">
+              <option value="PST">Pacific Time</option>
+              <option value="AMT">Arizona Time</option>
+              <option value="MST">Mountain Time</option>
+              <option value="CST">Central Time</option>
+              <option value="EST">Eastern Time</option>
+              <option value="AST">Atlantic Tim</option>
+            </select>
+            <span class="bmd-help">The timezone you are in</span>
+          </div>
+          <div class="form-group">
+            <button type="button" id="save-location">Save</button>
+          </div>
+        </form>
+      </section>
+    </main>
+    <script src="/static/app.js" type="application/javascript"></script>
+  </body>
+</html>

@@ -27,4 +27,6 @@ while station.isconnected() == False:
 print('Connection successful')
 print(station.ifconfig())
 
-ack = Pin(16, Pin.OUT)
+ack = Pin(16, Pin.IN)
+
+BROADCAST_SERVER_URL="http://localhost:5000"
